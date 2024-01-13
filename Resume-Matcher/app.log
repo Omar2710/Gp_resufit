@@ -1,0 +1,5 @@
+2024-01-12 20:36:05,553 (parse_resumes.py:30) - INFO: Started to read from Data/Resumes
+2024-01-12 20:36:05,554 (parse_resumes.py:27) - INFO: Deleted old files from Data/Processed/Resumes
+2024-01-12 20:36:05,554 (parse_resumes.py:37) - INFO: Reading from Data/Resumes is now complete.
+2024-01-12 20:36:05,554 (parse_resumes.py:47) - INFO: Started parsing the resumes.
+2024-01-12 20:36:09,924 (parse_resumes.py:51) - INFO: Parsing of the resumes is now complete.
