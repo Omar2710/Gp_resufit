@@ -41,30 +41,111 @@ export default function Home() {
     jobSkills: [{ skill: "", weight: "" }],
   };
   const [formData, setFormData] = useState<FormData>(initialFormData);
+const [data, setData] = useState<{id:number; title:string}[]>([]);
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("http://localhost:3001/tech-skill");
+      const fetchedData = await response.json();
+      setData(fetchedData);
+      console.log(fetchedData);
+    };
+
+    fetchData();
+  }, [formData]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const response = await fetch('http://localhost:3001/tech-skill');
+      const fetchedPosts = await response.json();
+      setPosts(fetchedPosts);
+    };
+
+    fetchPosts();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    
+    setFormData((prevData) => ({
+      ...prevData,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   const handleUpdateJobSkillSelection = (
     e: SelectChangeEvent<string>,
     index: number
   ) => {
-   
+    const updatedJobSkills = [...formData.jobSkills];
+    updatedJobSkills[index] = {
+      ...updatedJobSkills[index],
+      skill: e.target.value,
+    };
+    setFormData((prev) => ({
+      ...prev,
+      jobSkills: updatedJobSkills,
+    }));
+  };
+
+  const handleUpdateJobWeightSelection = (
+    e: SelectChangeEvent<string>,
+    index: number
+  ) => {
+    const updatedJobSkills = [...formData.jobSkills];
+    updatedJobSkills[index] = {
+      ...updatedJobSkills[index],
+      weight: e.target.value,
+    };
+    setFormData((prev) => ({
+      ...prev,
+      jobSkills: updatedJobSkills,
+    }));
   };
 
   const handleAddNewSkill = () => {
-
+    setFormData((prev) => ({
+      ...prev,
+      jobSkills: [...prev.jobSkills, { skill: "", weight: "" }],
+    }));
   };
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission logic here
+    try {
+      const response = await fetch('http://localhost:3001/tech-skill', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // Assuming JSON data
+        },
+        body: JSON.stringify(formData), // Send form data as JSON
+      });
+  
+      if (response.ok) {
+        // Handle successful submission
+        console.log('Job opening created successfully!',formData);
+        setFormData(initialFormData);
+      
+        // You might want to clear form data or display a success message
+      } else {
+        // Handle error
+        console.error('Submission failed:', response.statusText);
+        // Display an error message to the user
+      }
+    } catch (error) {
+      console.error('Error during submission:', error);
+      // Handle network errors or other issues
+    }
 
   };
 
   const handleDeleteJobSkill = (index: number) => {
-
+    const updatedJobSkills = [...formData.jobSkills];
+    updatedJobSkills.splice(index, 1);
+    setFormData((prev) => ({
+      ...prev,
+      jobSkills: updatedJobSkills,
+    }));
   };
 
   return (
