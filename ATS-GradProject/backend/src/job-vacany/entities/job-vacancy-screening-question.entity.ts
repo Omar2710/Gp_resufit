@@ -1,15 +1,23 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { ScreeningQuestion } from 'src/settings/entities/screening-question.entity';
+import { JobVacany } from './job-vacany.entity';
 
 @Entity()
 export class JobVacanyScreeningQuestions {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  answer: string;
+  @ManyToOne(
+    () => ScreeningQuestion,
+    (d) => d.job_vacancy_screening_questions,
+    {
+      cascade: true,
+      onDelete: 'CASCADE',
+    },
+  )
+  screening_question: ScreeningQuestion;
 
-  @OneToMany(() => ScreeningQuestion, (d) => d.job_vacancy_screening_questions)
-  screening_questions: ScreeningQuestion[];
+  @ManyToOne(() => JobVacany, (d) => d.job_vacancy_screening_questions)
+  job_vacancy: JobVacany;
 }
