@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
-import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+import "./globals.css";
+import { SessionManager } from "@/component/SessionManager";
+import { ThemeManager } from "@/component/ThemeManager";
+
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ["100", "300", "400", "500", "700", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,8 +23,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+      <body className={roboto.className}>
+        <SessionManager>
+          <ThemeManager>
+            <AppRouterCacheProvider>{children}</AppRouterCacheProvider>
+          </ThemeManager>
+        </SessionManager>
       </body>
     </html>
   );
