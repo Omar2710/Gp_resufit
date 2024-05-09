@@ -181,15 +181,20 @@ console.log(resumeData)
     if (job && profile && !loading) {
       setFormData({
         ...formData,
-        screeningQuestions: job.screeningQuestions.map((j) => ({
-          question: j.question,
-          answer: "",
-        })),
+        screeningQuestions: job.screeningQuestions.map(
+          ({ key_answer, question }, index) => ({
+            key_answer,
+            question,
+            answer: formData?.screeningQuestions[index]?.answer || "",
+          })
+        ),
         email: profile.email,
         phoneNumber: profile.phoneNumber,
+        firstName: profile.firstName,
+        lastName: profile.lastName
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [job, profile, loading]);
 
   console.log({ profile})
