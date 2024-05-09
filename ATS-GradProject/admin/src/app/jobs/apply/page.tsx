@@ -315,6 +315,23 @@ console.log(resumeData)
           <Button fullWidth type="submit" variant="contained" sx={{ mt: 4 }} onSubmit={handleSubmit}>
             Apply
           </Button>
+          {isSubmitted && (
+            <Box
+              sx={{
+                mt: 2,
+                p: 1,
+                display: "flex",
+                gap: 1,
+                background: "#f5f5f5",
+              }}
+            >
+              <CircularProgress size={18} />
+              <Typography variant="body2">
+                We are currently processing your data. Please be patient with
+                us.
+              </Typography>
+            </Box>
+          )}
         </form>
       </Box>
     </Container>
