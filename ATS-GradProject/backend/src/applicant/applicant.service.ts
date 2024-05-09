@@ -101,6 +101,19 @@ export class ApplicantService implements OnModuleInit {
       },
     );
 
+      const validation_result: {
+      isAcceptable: boolean;
+      explanation: string;
+    }[] = await Promise.all(
+      screeningQuestionsParsed.map(({ question, answer, key_answer }) => {
+        const prompt = chatPrompt
+          .replace('{question}', question)
+          .replace('{answer}', answer)
+          .replace('{key_answer}', key_answer);
+        return this.chatGptService.promptChat(prompt);
+      }),
+    );
+
     const rating = Math.round((similarityData.percantage * 5) / 100).toString();
 
     let newResume = this.resumeRepository.create({
