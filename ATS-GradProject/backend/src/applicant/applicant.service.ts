@@ -15,6 +15,10 @@ import { RegisterApplicantDto } from './dto/register-applicant.dto';
 import * as bcrypt from 'bcrypt';
 import { ResumeScreeningQuestionsAnswers } from './entities/resume-screening-questions-answers.entity';
 
+const chatPrompt = `{question}. For this question this is the following answer provided: {answer}. 
+I want the answer provided as a JSON data following this structure: { isAcceptable: boolean; explanation: string; }. Evaluate the answer if it fits wth the question then accept it, and also this is a reference key answer to use as guideline: 
+{key_answer}`;
+
 @Injectable()
 export class ApplicantService implements OnModuleInit {
   constructor(
