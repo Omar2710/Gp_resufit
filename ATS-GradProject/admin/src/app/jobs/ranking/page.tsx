@@ -13,46 +13,32 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function Ranking() {
-  const params = useSearchParams();
-  const rank=parseInt(params.get("rank") ?? "0") ?? 0
-  const rankPercentage=(100/5)* rank
-  let message;
+const params = useSearchParams();
+  const Id = params.get("resumeId");
+  const { data } = useSession();
+  const [resume, setResume] = useState<any>();
 
-  if (rankPercentage < 50) {
-    message = (
-      <Typography variant="h6" textAlign="center" color="text.secondary">
-        Keep pushing! 🚀 Achieving a {rankPercentage}% match in your CV against the job
-        requirements shows there is room for improvement. Consider revisiting your CV to
-        better align your skills, experience, and qualifications with what the position demands.
-        Tailoring your CV more closely to the job&apos;s expectations can significantly enhance your
-        chances. Don&apos;t give up — use this as an opportunity to refine your presentation and
-        highlight your strengths! 💪✨
-      </Typography>
-    );
-  } else if (rankPercentage >= 50 && rankPercentage <= 70) {
-    message = (
-      <Typography variant="h6" textAlign="center" color="text.secondary">
-        Good effort! 🌟 You&apos;ve achieved a {rankPercentage}% match in your CV against the job
-        requirements, which is a solid foundation. There&apos;s potential for growth, and with a bit
-        more hard work to refine and enhance your CV, you can increase your alignment with the
-        job&apos;s demands. Focus on areas where you can demonstrate more relevant skills, experiences,
-        or qualifications. Keep striving for the best match possible! 👍📈
-      </Typography>
-    );
-  } else {
-    message = (
-      <Typography variant="h6" textAlign="center" color="text.secondary">
-        Congratulations! 🎉 Achieving an {rankPercentage}% match in your CV against the job
-        requirements is a remarkable accomplishment. Your skills, experience,
-        and qualifications align closely with what the position demands,
-        showcasing a strong compatibility. This outstanding match reflects
-        your careful consideration of the job&apos;s expectations and your
-        ability to present a well-tailored CV. Best of luck as you progress
-        through the recruitment process — your dedication to a precise fit is
-        sure to make a positive impact! 👏🌟
-      </Typography>
-    );
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(`http://localhost:3001/resume/${Id}`, {
+        headers: {
+          Authorization: `Bearer ${data?.accessToken}`,
+        },
+      });
+      const fetchedData = await response.json();
+      setResume(fetchedData);
+    };
+
+    if (data) {
+      fetchData();
+    }
+  }, [data, Id]);
+
+  if (!resume) {
+    return null;
   }
+
+  
   return (
     <Box
       sx={{
