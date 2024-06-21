@@ -138,12 +138,17 @@ const formattedFeedbackPrompt = feedbackPrompt
       education,
       language,
       yearsOfExperience,
-      rating,
+      rating: total_rating.toString(),
+      resume_rating: resume_rating.toString(),
+      screening_questions_rating: screening_rating.toString(),
       extracted_keywords: '',
-      resume_data: '',
+      resume_data: resumeData?.resume_data,
+      resume_feedback_conclusion: feedback_result?.conclusion,
+      resume_feedback_needsToImprove: feedback_result?.needsToImprove,
       phoneNumber,
       email,
       jobVacancy,
+      odooApplicantId: odooResult as number,
     });
 
     newResume = await this.resumeRepository.save(newResume);
