@@ -131,6 +131,7 @@ const formattedFeedbackPrompt = feedbackPrompt
     const feedback_result: { conclusion: string; needsToImprove: string } =
       await this.chatGptService.promptChat(formattedFeedbackPrompt);
 
+     resumeData.resume_data = this.escapeString(resumeData?.resumeData ?? '');
     
     let newResume = this.resumeRepository.create({
       filename: resumeFile.filename,
@@ -242,4 +243,15 @@ const formattedFeedbackPrompt = feedbackPrompt
       userName,
     );
   }
+escapeString(str: string) {
+    if (typeof str !== 'string') {
+      throw new Error('Input must be a string');
+    }
+
+    // Regular expression to match all characters that need to be escaped
+    const re = /[\0\x08\x09\x1a\n\r"'\\\%]|[^\x00-\x7F]/g;
+
+    // This uses the global flag to replace all occurrences
+    return str.replace(re, '');
+  }
 }
