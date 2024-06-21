@@ -18,6 +18,12 @@ import { ResumeScreeningQuestionsAnswers } from './entities/resume-screening-que
 const chatPrompt = `{question}. For this question this is the following answer provided: {answer}. 
 I want the answer provided as a JSON data following this structure: { isAcceptable: boolean; explanation: string; }. Evaluate the answer if it fits wth the question then accept it, and also this is a reference key answer to use as guideline: 
 {key_answer}`;
+const feedbackPrompt=`Provided below is the job description for a job screening system. 
+And also provided is a parsed resume data and a {resume_rating} of 5 stars. Please compare both, and give me conclusion of the matching for this candidate. 
+Write the result as json with only the conclusion that will be shown to the candidate, so I need to show him his feedback against both his rating and job description match, and what needs to be improved better. Make the json follow this structure: { conclusion: string; needsToImprove: string }
+This is the job description: {job_description}
+This is the parsed resume: {parsed_resume}
+keep in mind that the rating for this resume against job description is {resume_rating} stars from 5 so be careful while listing the conclusion`;
 
 @Injectable()
 export class ApplicantService implements OnModuleInit {
@@ -116,6 +122,16 @@ export class ApplicantService implements OnModuleInit {
 
     const rating = Math.round((similarityData.percantage * 5) / 100).toString();
 
+const formattedFeedbackPrompt = feedbackPrompt
+      .replace('{job_description}', jobVacancy.jobDescription)
+      .replace('{parsed_resume}', resumeData?.resume_data)
+      .replace('{resume_rating}', resume_rating.toString());
+      
+
+    const feedback_result: { conclusion: string; needsToImprove: string } =
+      await this.chatGptService.promptChat(formattedFeedbackPrompt);
+
+    
     let newResume = this.resumeRepository.create({
       filename: resumeFile.filename,
       education,
