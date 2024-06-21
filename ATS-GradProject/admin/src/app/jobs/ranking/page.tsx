@@ -37,9 +37,16 @@ const params = useSearchParams();
   if (!resume) {
     return null;
   }
-
+const {
+    rating: rank,
+    resume_rating: resume_rank,
+    screening_questions_rating: screening_rating,
+    resume_feedback_conclusion,
+    resume_feedback_needsToImprove,
+    resumeScreeningQuestionsAnswers,
+  } = resume;
   
-  return (
+   return (
     <Box
       sx={{
         bgcolor: "background.default",
@@ -50,7 +57,6 @@ const params = useSearchParams();
       <Container
         id="faq"
         sx={{
-          pt: { xs: 4, sm: 12 },
           pb: { xs: 8, sm: 16 },
           position: "relative",
           display: "flex",
@@ -70,22 +76,79 @@ const params = useSearchParams();
         >
           Ranking Against Job Required
         </Typography>
-        <CircularWithValueLabel rank={rank}/>
+        <CircularWithValueLabel rank={parseInt(rank)} />
         <Rating
           name="half-rating-read"
           defaultValue={rank}
           precision={1}
           readOnly
         />
-          {message}
-        <Link href={"/jobs"}>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ width: "300px" }}
+        <Box sx={{ display: "flex", flexDirection: "column" }}>
+          <Box sx={{ mb: 8 }}>
+            <Paper sx={{ display: "flex", gap: 2, p: 2, mb: 2 }}>
+              <Typography variant="h5">Resume Evaluation</Typography>
+              <Rating
+                name="half-rating-read"
+                defaultValue={parseInt(resume_rank)}
+                precision={1}
+                readOnly
+              />
+            </Paper>
+            <Typography variant="h6" textAlign="left" color="text.secondary">
+              {resume_feedback_conclusion}
+            </Typography>
+          </Box>
+          <Box>
+            <Paper sx={{ display: "flex", gap: 2, p: 2, mb: 2 }}>
+              <Typography variant="h5">Screening Questions</Typography>
+              <Rating
+                name="half-rating-read"
+                defaultValue={parseInt(screening_rating)}
+                precision={1}
+                readOnly
+              />
+            </Paper>
+            {resumeScreeningQuestionsAnswers
+              ? resumeScreeningQuestionsAnswers.map((x: any) => {
+                  return (
+                    <Box key={x.question} sx={{ gap: 2, mb: 2 }}>
+                      <Typography
+                        variant="h6"
+                        textAlign="left"
+                        color="text.secondary"
+                        fontWeight={700}
+                      >
+                        Q: {x.question}
+                      </Typography>
+                      <Typography
+                        variant="h6"
+                        textAlign="left"
+                        color="text.secondary"
+                      >
+                        A: {x.answer}
+                      </Typography>
+                      <Alert severity="info">{x.answer_feedback}</Alert>
+                      <Divider sx={{ mt: 2 }} />
+                    </Box>
+                  );
+                })
+              : null}
+          </Box>
+        </Box>
+
+        <Typography variant="h3">What you can do to improve ?</Typography>
+        <Typography
+          variant="h6"
+          textAlign="left"
+          color="text.secondary"
+          sx={{ background: "#ebffeb", p: 1 }}
         >
-          Continue
-        </Button>
+          {resume_feedback_needsToImprove}
+        </Typography>
+        <Link href={"/jobs"}>
+          <Button variant="contained" color="primary" sx={{ width: "300px" }}>
+            Continue
+          </Button>
         </Link>
       </Container>
     </Box>
